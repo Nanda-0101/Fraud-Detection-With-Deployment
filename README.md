@@ -52,3 +52,132 @@ Karena data fraud biasanya sangat sedikit (imbalanced), sistem ini menggunakan *
 ├── API/                # Production code dengan FastAPI
 ├── Deployment/         # Dashboard interaktif Streamlit
 └── Data/               # Dataset mentah (Raw Data)
+
+
+---
+
+## ▶️ Cara Menjalankan Project
+
+### 1. Clone Repository
+```bash
+git clone https://github.com/username/Portofolio_2.git
+cd Portofolio_2
+```
+
+---
+
+### 2. Install Dependencies
+```bash
+pip install -r API/requirements.txt
+```
+
+---
+
+### 3. Jalankan API (FastAPI)
+```bash
+cd API
+uvicorn fraud_api:app --reload
+```
+
+📍 Akses API:
+```
+http://127.0.0.1:8000
+```
+
+---
+
+### 4. Jalankan Dashboard
+```bash
+cd Deployment
+python Fraud_Dashboard.py
+```
+
+---
+
+### 5. Jalankan Notebook (Opsional)
+```bash
+jupyter notebook
+```
+
+---
+
+## 📊 Output Sistem
+
+- 🔍 Deteksi fraud / normal transaksi
+- 📈 Probabilitas fraud
+- 📊 Visualisasi distribusi transaksi
+- ⚡ API real-time prediction
+- 📉 Model evaluation metrics
+
+---
+
+## 📈 Hasil Model
+
+Model XGBoost memberikan performa tinggi dengan:
+- ROC-AUC meningkat signifikan
+- Recall fraud lebih baik (minim miss fraud)
+- Stabil pada dataset imbalance
+
+---
+
+## 📌 Fitur Utama
+
+✔ Fraud detection real-time  
+✔ Feature engineering advanced  
+✔ SMOTE balancing dataset  
+✔ Hyperparameter tuning (GridSearchCV)  
+✔ API deployment ready  
+✔ Dashboard visualization  
+
+---
+
+## 🖥️ Contoh Output
+
+Input:
+- Transaction amount
+- Device type
+- Location
+- Login behavior
+
+Output:
+- Fraud probability score
+- Fraud / Normal classification
+
+---
+
+## 👨‍💻 Author
+
+**I Putu Nanda Aditya**
+
+- GitHub: https://github.com/username
+- Portfolio: https://...
+
+---
+
+## 🚀 Future Improvement
+
+- Deploy ke cloud (AWS / GCP)
+- Integrasi Kafka streaming real-time
+- Tambah deep learning (LSTM/Transformer)
+- UI dashboard lebih interaktif (Streamlit Pro)
+```
+
+---
+
+# 🔥 Hasilnya
+README ini sudah:
+- ✔ Standar portfolio AI/ML industri
+- ✔ Ada cara kerja sistem (penting untuk skripsi)
+- ✔ Ada arsitektur pipeline ML
+- ✔ Siap recruiter lihat
+- ✔ Siap dimasukkan ke GitHub repo
+
+---
+
+Kalau kamu mau upgrade level berikutnya, aku bisa bantu:
+- 🚀 :contentReference[oaicite:1]{index=1}
+- 📊 :contentReference[oaicite:2]{index=2}
+- 💼 :contentReference[oaicite:3]{index=3}
+- 🌐 :contentReference[oaicite:4]{index=4}
+
+Tinggal bilang 👍
