@@ -1,88 +1,54 @@
-# 🚀 Fraud Detection System using XGBoost + MLP (Ensemble Learning)
+# 🛡️ End-to-End Real-Time Fraud Detection System
 
-![Python](https://img.shields.io/badge/Python-3.10-blue)
-![Machine Learning](https://img.shields.io/badge/ML-XGBoost%20%7C%20SMOTE-orange)
-![Status](https://img.shields.io/badge/Project-Completed-green)
-![Type](https://img.shields.io/badge/Project-Academic-lightgrey)
+![Python](https://img.shields.io/badge/Python-3.10-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![XGBoost](https://img.shields.io/badge/XGBoost-black?style=for-the-badge)
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
 
----
-
-## 📌 Deskripsi Project
-
-Project ini merupakan sistem **deteksi fraud transaksi keuangan** berbasis Machine Learning menggunakan pendekatan **ensemble learning dan feature engineering**.
-
-Sistem ini mampu menganalisis transaksi dan mengklasifikasikan apakah transaksi tersebut:
-- ✔ Normal Transaction
-- ⚠ Fraud Transaction
-
-Model utama yang digunakan:
-- 🌳 **XGBoost Classifier** (model utama)
-- 🧠 **MLP Neural Network** (pendukung konsep ensemble)
-- ⚖️ **SMOTE** untuk balancing dataset
+Proyek ini adalah sistem deteksi penipuan (fraud) transaksi keuangan yang komprehensif, mencakup seluruh pipeline data science mulai dari pembersihan data mentah hingga penyediaan layanan prediksi real-time melalui API dan Dashboard interaktif.
 
 ---
 
-## 🎯 Tujuan Project
+## 🚀 Alur Kerja Sistem (Pipeline)
 
-- Mendeteksi transaksi fraud secara otomatis
-- Mengurangi false transaction dalam sistem keuangan
-- Meningkatkan performa model dengan feature engineering
-- Menyediakan API dan dashboard untuk simulasi real-time
 
----
 
-## 🧠 Cara Kerja Sistem
+[Image of Machine Learning Pipeline]
 
-### 1. Data Collection
-Dataset transaksi keuangan dikumpulkan dari file CSV.
 
-### 2. Data Cleaning
-- Handling missing values
-- Drop duplicate data
-- Convert datetime format
+### 1. Data Analytics & Cleaning
+Melakukan eksplorasi data (EDA) untuk memahami pola transaksi.
+* **Pembersihan Data:** Menangani nilai yang hilang (missing values) dengan median untuk numerik dan mode untuk kategorikal.
+* **Visualisasi:** Analisis korelasi, distribusi jumlah transaksi, dan perbandingan antara transaksi normal vs fraud.
 
-### 3. Feature Engineering
-Menambahkan fitur penting:
-- amount_ratio
-- txn_per_day
-- account_trust_score
-- device_risk
-- night_transaction
+### 2. Advanced Feature Engineering
+Menciptakan fitur baru untuk meningkatkan daya prediksi model:
+* **Amount Ratio:** Rasio transaksi saat ini dibanding rata-rata transaksi user.
+* **Device Risk:** Skor risiko berdasarkan penggunaan perangkat baru, lokasi baru, atau transaksi luar negeri.
+* **Time Features:** Mengekstrak jam transaksi untuk mendeteksi `night_transaction` (transaksi tengah malam yang berisiko tinggi).
+* **Account Trust Score:** Menghitung tingkat kepercayaan akun berdasarkan umur akun dan jumlah gagal login.
 
-### 4. Balancing Data
-Menggunakan **SMOTE** untuk mengatasi imbalance fraud vs non-fraud.
+### 3. Balancing Data (SMOTE)
+Karena data fraud biasanya sangat sedikit (imbalanced), sistem ini menggunakan **SMOTE (Synthetic Minority Over-sampling Technique)** untuk menyeimbangkan jumlah data fraud dan normal agar model tidak bias.
 
-### 5. Model Training
-- XGBoost Classifier
-- Hyperparameter tuning (GridSearchCV)
-- Stratified K-Fold Cross Validation
+### 4. Model Training & Optimization (XGBoost)
+* Menggunakan algoritma **XGBoost Classifier**.
+* **Hyperparameter Tuning:** Menggunakan `GridSearchCV` dengan `StratifiedKFold` untuk mencari parameter terbaik (max_depth, learning_rate, dll).
+* **Evaluasi:** Model dievaluasi menggunakan *Confusion Matrix*, *ROC-AUC Curve*, dan *Feature Importance*.
 
-### 6. Evaluation
-Evaluasi model menggunakan:
-- Accuracy
-- Precision
-- Recall
-- F1-score
-- ROC-AUC
-
-### 7. Deployment
-- Flask / FastAPI backend
-- Streamlit dashboard
-- Real-time prediction API
+### 5. Deployment & Simulation
+* **FastAPI:** Menyediakan endpoint `/predict` untuk menerima data transaksi dalam format JSON dan mengembalikan probabilitas fraud.
+* **Streamlit Dashboard:** Antarmuka visual untuk mensimulasikan transaksi secara langsung oleh pengguna.
+* **Real-Time Stream Simulation:** Skrip simulasi untuk memproses ribuan data transaksi seolah-olah data masuk secara terus-menerus.
 
 ---
 
-## 🧠 Teknologi yang Digunakan
+## 📂 Struktur Folder
 
-- Python 3.10
-- Pandas & NumPy
-- Scikit-Learn
-- XGBoost
-- Imbalanced-learn (SMOTE)
-- Matplotlib & Seaborn
-- Joblib
-- FastAPI / Streamlit
-
----
-
-## 📂 Struktur Project
+```bash
+.
+├── 📊 Analyst Data/       # EDA, Cleaning, & df_clean.csv
+├── 🧪 Modeling Data/      # Feature Engineering, SMOTE, Training, & Save Model (.pkl)
+├── 🔌 API/                # Production code dengan FastAPI
+├── 🚀 Deployment/         # Dashboard interaktif Streamlit
+└── 📁 Data/               # Dataset mentah (Raw Data)
