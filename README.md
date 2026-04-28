@@ -1,146 +1,158 @@
-# End-to-End Real-Time Fraud Detection System
+# Real-Time Fraud Detection System
 
-![Python](https://img.shields.io/badge/Python-3.10-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![XGBoost](https://img.shields.io/badge/XGBoost-black?style=for-the-badge)
-![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
-![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
-
-Proyek ini adalah sistem deteksi penipuan (fraud) transaksi keuangan yang komprehensif, mencakup seluruh pipeline data science mulai dari pembersihan data mentah hingga penyediaan layanan prediksi real-time melalui API dan Dashboard interaktif.
+Sistem deteksi penipuan transaksi keuangan berbasis Machine Learning menggunakan **XGBoost**, dilengkapi dengan REST API (FastAPI), simulasi streaming transaksi, dan dashboard interaktif (Streamlit).
 
 ---
 
-## Alur Kerja Sistem (Pipeline)
+## Struktur Proyek
 
-
-
-[Image of Machine Learning Pipeline]
-
-
-### Data Analytics & Cleaning
-Melakukan eksplorasi data (EDA) untuk memahami pola transaksi.
-* **Pembersihan Data:** Menangani nilai yang hilang (missing values) dengan median untuk numerik dan mode untuk kategorikal.
-* **Visualisasi:** Analisis korelasi, distribusi jumlah transaksi, dan perbandingan antara transaksi normal vs fraud.
-
-### Advanced Feature Engineering
-Menciptakan fitur baru untuk meningkatkan daya prediksi model:
-* **Amount Ratio:** Rasio transaksi saat ini dibanding rata-rata transaksi user.
-* **Device Risk:** Skor risiko berdasarkan penggunaan perangkat baru, lokasi baru, atau transaksi luar negeri.
-* **Time Features:** Mengekstrak jam transaksi untuk mendeteksi `night_transaction` (transaksi tengah malam yang berisiko tinggi).
-* **Account Trust Score:** Menghitung tingkat kepercayaan akun berdasarkan umur akun dan jumlah gagal login.
-
-### Balancing Data (SMOTE)
-Karena data fraud biasanya sangat sedikit (imbalanced), sistem ini menggunakan **SMOTE (Synthetic Minority Over-sampling Technique)** untuk menyeimbangkan jumlah data fraud dan normal agar model tidak bias.
-
-### Model Training & Optimization (XGBoost)
-* Menggunakan algoritma **XGBoost Classifier**.
-* **Hyperparameter Tuning:** Menggunakan `GridSearchCV` dengan `StratifiedKFold` untuk mencari parameter terbaik (max_depth, learning_rate, dll).
-* **Evaluasi:** Model dievaluasi menggunakan *Confusion Matrix*, *ROC-AUC Curve*, dan *Feature Importance*.
-
-### Deployment & Simulation
-* **FastAPI:** Menyediakan endpoint `/predict` untuk menerima data transaksi dalam format JSON dan mengembalikan probabilitas fraud.
-* **Streamlit Dashboard:** Antarmuka visual untuk mensimulasikan transaksi secara langsung oleh pengguna.
-* **Real-Time Stream Simulation:** Skrip simulasi untuk memproses ribuan data transaksi seolah-olah data masuk secara terus-menerus.
+```
+fraud-detection/
+│
+├── Analyst Data/
+│   ├── EDA_Preprocessing.ipynb       # Explorasi dan pembersihan data
+│   └── df_clean.csv                  # Data hasil preprocessing
+│
+├── Modeling Data/
+│   ├── Feature_Engineering.ipynb     # Rekayasa fitur & pelatihan model
+│   ├── df_final.csv                  # Data siap modeling
+│   ├── fraud_detection_xgb_model.pkl # Model XGBoost terlatih
+│   └── model_features.json           # Daftar fitur yang digunakan model
+│
+├── Deployment/
+│   ├── api.py                        # REST API dengan FastAPI
+│   ├── stream_simulation.ipynb       # Simulasi streaming transaksi
+│   └── dashboard.py                  # Dashboard Streamlit
+│
+└── README.md
+```
 
 ---
 
-## truktur Folder
+## Cara Kerja Sistem
+
+### 1. Eksplorasi & Preprocessing Data (`EDA_Preprocessing.ipynb`)
+
+- Memuat dataset transaksi dari `Fraud detection Dataset.csv`
+- Menghapus duplikat dan mengkonversi kolom waktu ke format datetime
+- Mengisi nilai kosong: numerik dengan **median**, kategorik dengan **modus**
+- Visualisasi distribusi fitur, analisis fraud vs non-fraud, dan heatmap korelasi
+- Menyimpan data bersih ke `df_clean.csv`
+
+### 2. Feature Engineering & Training Model (`Feature_Engineering.ipynb`)
+
+**Fitur yang dibuat:**
+| Fitur | Deskripsi |
+|---|---|
+| `amount_ratio` | Rasio transaksi saat ini terhadap rata-rata transaksi |
+| `txn_per_day` | Intensitas transaksi per hari |
+| `account_trust_score` | Skor kepercayaan akun berdasarkan usia & gagal login |
+| `device_risk` | Skor risiko perangkat (device baru + lokasi baru + transaksi asing) |
+| `night_transaction` | Flag transaksi tengah malam (jam 00.00–05.00) |
+| `txn_hour`, `txn_day`, `txn_month`, `is_weekend` | Fitur berbasis waktu |
+
+**Proses pelatihan:**
+1. Split data: 80% train, 20% test (stratified)
+2. Oversampling dengan **SMOTE** untuk menangani ketidakseimbangan kelas
+3. Tuning hyperparameter dengan **GridSearchCV + StratifiedKFold (5-fold)**
+4. Melatih **XGBoostClassifier** dengan parameter terbaik
+5. Evaluasi: Accuracy, Precision, Recall, F1-Score, ROC-AUC, Confusion Matrix
+6. Menyimpan model ke `fraud_detection_xgb_model.pkl`
+
+### 3. REST API (`api.py`)
+
+API dibangun dengan **FastAPI** dan menerima data transaksi secara real-time.
+
+**Endpoint:**
+- `GET /` — Status API
+- `POST /predict` — Prediksi fraud untuk satu transaksi
+
+**Contoh Request:**
+```json
+{
+  "transaction_amount": 5000.0,
+  "transactions_last_24h": 10,
+  "failed_logins_24h": 3,
+  "is_foreign_transaction": 1,
+  "is_new_device": 1,
+  "is_new_location": 0
+}
+```
+
+**Contoh Response:**
+```json
+{
+  "fraud_prediction": 1,
+  "fraud_probability": 0.92,
+  "alert": "Fraud Detected"
+}
+```
+
+> Transaksi diklasifikasikan sebagai **fraud** jika probabilitas > 0.8.
+
+### 4. Simulasi Streaming (`stream_simulation.ipynb`)
+
+- Memuat transaksi dari dataset, diurutkan berdasarkan waktu
+- Setiap transaksi diproses satu per satu (menyimulasikan data stream)
+- Menampilkan **FRAUD ALERT** jika prediksi = fraud
+- Memvisualisasikan probabilitas fraud sepanjang aliran transaksi
+
+### 5. Dashboard Streamlit (`dashboard.py`)
+
+Dashboard interaktif untuk menguji prediksi secara manual:
+- Input parameter transaksi melalui form
+- Mengirim request ke FastAPI
+- Menampilkan hasil prediksi: probabilitas fraud & status transaksi
+
+---
+
+## Instalasi & Menjalankan
+
+### Prasyarat
 
 ```bash
-.
-├── Analyst Data/       # EDA, Cleaning, & df_clean.csv
-├── Modeling Data/      # Feature Engineering, SMOTE, Training, & Save Model (.pkl)
-├── API/                # Production code dengan FastAPI
-├── Deployment/         # Dashboard interaktif Streamlit
-└── Data/               # Dataset mentah (Raw Data)
-
-
----
-
-## ▶️ Cara Menjalankan Project
-
-### 1. Clone Repository
-```bash
-git clone https://github.com/username/Portofolio_2.git
-cd Portofolio_2
+pip install pandas numpy matplotlib seaborn scikit-learn imbalanced-learn xgboost fastapi uvicorn streamlit joblib pydantic requests
 ```
 
----
+### Menjalankan API
 
-### 2. Install Dependencies
-```bash
-pip install -r API/requirements.txt
-```
-
----
-
-### 3. Jalankan API (FastAPI)
-```bash
-cd API
-uvicorn fraud_api:app --reload
-```
-
-📍 Akses API:
-```
-http://127.0.0.1:8000
-```
-
----
-
-### 4. Jalankan Dashboard
 ```bash
 cd Deployment
-python Fraud_Dashboard.py
+uvicorn api:app --reload
 ```
 
----
+API akan berjalan di `http://127.0.0.1:8000`
 
-### 5. Jalankan Notebook (Opsional)
+### Menjalankan Dashboard
+
 ```bash
-jupyter notebook
+streamlit run dashboard.py
 ```
 
 ---
 
-## 📊 Output Sistem
+## Fitur Model
 
-- 🔍 Deteksi fraud / normal transaksi
-- 📈 Probabilitas fraud
-- 📊 Visualisasi distribusi transaksi
-- ⚡ API real-time prediction
-- 📉 Model evaluation metrics
+Model menggunakan 22 fitur berikut:
 
----
-
-## 📈 Hasil Model
-
-Model XGBoost memberikan performa tinggi dengan:
-- ROC-AUC meningkat signifikan
-- Recall fraud lebih baik (minim miss fraud)
-- Stabil pada dataset imbalance
+```
+transaction_amount, transaction_type, location, is_foreign_transaction,
+device_type, is_new_device, is_new_location, account_age_days,
+avg_transaction_amount, transactions_last_24h, failed_logins_24h,
+time_since_last_txn, txn_hour, is_weekend, txn_day, txn_month,
+txn_dayofweek, amount_ratio, txn_per_day, account_trust_score,
+device_risk, night_transaction
+```
 
 ---
 
-## 📌 Fitur Utama
+## Teknologi yang Digunakan
 
-✔ Fraud detection real-time  
-✔ Feature engineering advanced  
-✔ SMOTE balancing dataset  
-✔ Hyperparameter tuning (GridSearchCV)  
-✔ API deployment ready  
-✔ Dashboard visualization  
-
----
-
-## 🖥️ Contoh Output
-
-Input:
-- Transaction amount
-- Device type
-- Location
-- Login behavior
-
-Output:
-- Fraud probability score
-- Fraud / Normal classification
-
----
+| Komponen | Teknologi |
+|---|---|
+| Machine Learning | XGBoost, Scikit-learn, Imbalanced-learn |
+| Data Processing | Pandas, NumPy |
+| Visualisasi | Matplotlib, Seaborn |
+| API | FastAPI, Uvicorn, Pydantic |
+| Dashboard | Streamlit |
+| Model Serialization | Joblib |
