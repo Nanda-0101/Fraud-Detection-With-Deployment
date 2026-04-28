@@ -1,9 +1,9 @@
 # Real-Time Fraud Detection System
 
-Sistem deteksi penipuan transaksi keuangan berbasis Machine Learning menggunakan **XGBoost**, dilengkapi dengan REST API (FastAPI), simulasi streaming transaksi, dan dashboard interaktif (Streamlit).
-
 ![Python](https://img.shields.io/badge/Python-3.10-blue)
 ![Machine Learning](https://img.shields.io/badge/ML-XGBoost-orange)
+
+Sistem deteksi penipuan transaksi keuangan berbasis Machine Learning menggunakan **XGBoost**, dilengkapi dengan REST API (FastAPI), simulasi streaming transaksi, dan dashboard interaktif (Streamlit).
 
 ---
 
