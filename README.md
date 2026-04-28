@@ -7,31 +7,6 @@ Sistem deteksi penipuan transaksi keuangan berbasis Machine Learning menggunakan
 
 ---
 
-## Struktur Proyek
-
-```
-fraud-detection/
-│
-├── Analyst Data/
-│   ├── EDA_Preprocessing.ipynb       # Explorasi dan pembersihan data
-│   └── df_clean.csv                  # Data hasil preprocessing
-│
-├── Modeling Data/
-│   ├── Feature_Engineering.ipynb     # Rekayasa fitur & pelatihan model
-│   ├── df_final.csv                  # Data siap modeling
-│   ├── fraud_detection_xgb_model.pkl # Model XGBoost terlatih
-│   └── model_features.json           # Daftar fitur yang digunakan model
-│
-├── Deployment/
-│   ├── api.py                        # REST API dengan FastAPI
-│   ├── stream_simulation.ipynb       # Simulasi streaming transaksi
-│   └── dashboard.py                  # Dashboard Streamlit
-│
-└── README.md
-```
-
----
-
 ## Cara Kerja Sistem
 
 ### 1. Eksplorasi & Preprocessing Data (`EDA_Preprocessing.ipynb`)
