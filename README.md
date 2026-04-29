@@ -92,6 +92,7 @@ Pastikan environment sudah aktif, kemudian install dependency:
 
 ```bash
 pip install pandas numpy matplotlib seaborn scikit-learn imbalanced-learn xgboost fastapi uvicorn streamlit joblib pydantic requests
+```
 
 ### Menjalankan API
 
