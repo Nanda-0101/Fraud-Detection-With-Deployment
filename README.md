@@ -88,26 +88,39 @@ Dashboard interaktif untuk menguji prediksi secara manual:
 
 ### Prasyarat
 
+Pastikan environment sudah aktif, kemudian install dependency:
+
 ```bash
 pip install pandas numpy matplotlib seaborn scikit-learn imbalanced-learn xgboost fastapi uvicorn streamlit joblib pydantic requests
-```
 
 ### Menjalankan API
 
 ```bash
-cd Deployment
-uvicorn api:app --reload
+cd api
+uvicorn fraud_api:app --reload
 ```
 
 API akan berjalan di `http://127.0.0.1:8000`
+Dokumentasi API tersedia di: `http://127.0.0.1:8000/docs`
 
 ### Menjalankan Dashboard
 
-```bash
-streamlit run dashboard.py
-```
+Kembali ke root project, lalu jalankan:
 
----
+streamlit run Deployment/Fraud_Dashboard.py
+
+Dashboard akan berjalan di:
+
+http://localhost:8501
+
+## Arsitektur Sistem
+
+Sistem terdiri dari tiga komponen utama:
+
+Streamlit Dashboard → FastAPI → Model Machine Learning (XGBoost)
+Dashboard mengirim request ke API
+API memproses data dan melakukan prediksi
+Model mengembalikan hasil ke dashboard
 
 ## Fitur Model
 
