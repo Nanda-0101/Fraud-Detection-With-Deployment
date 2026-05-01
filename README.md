@@ -108,7 +108,9 @@ Dokumentasi API tersedia di: `http://127.0.0.1:8000/docs`
 
 Kembali ke root project, lalu jalankan:
 
+```bash
 streamlit run Deployment/Fraud_Dashboard.py
+```
 
 Dashboard akan berjalan di:
 
